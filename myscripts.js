@@ -3,6 +3,7 @@ const Game = () => {
     const playerOne = Player("Player One", "X");
     const playerTwo = Player("Player Two", "O");
     const message = document.getElementById("message");
+    const restart = document.getElementById("restartBtn")
     let notStop = true;
     
     currentMove = playerOne
@@ -18,17 +19,16 @@ const Game = () => {
     ];
     const checkWin = () => {
         for (i = 0; i < winScenario.length; i++) {
-            if (board[winScenario[i][0]].innerHTML === board[winScenario[i][1]].innerHTML && board[winScenario[i][1]].innerHTML === winScenario[[i][2]].innerHTML) {
-                if (playerOne.symbol === board[winScenario[i][0]]) {
-                    winner = playerOne.name;
-                } else {
-                    winner = playerTwo.name;
-                }
-                message.innerHTML = `${winner} has won!`
+            if (board[winScenario[i][0]].innerHTML === board[winScenario[i][1]].innerHTML && board[winScenario[i][1]].innerHTML === board[winScenario[i][2]].innerHTML && board[winScenario[i][0]].innerHTML !== "") {
+                console.log(`${board[winScenario[i][0]].innerHTML} ${board[winScenario[i][1]].innerHTML} ${board[winScenario[i][2]].innerHTML}`);
+
+                // Display message
+                message.innerHTML = `${currentMove.name} wins!`;
                 return true;
             }
         }
     }
+
 
     const checkStatus = () => {
         if (checkWin()) {
@@ -57,11 +57,22 @@ const Game = () => {
                 } else {
                     currentMove = playerOne
                 }
+                if (notStop) {
+                    message.innerHTML = `${currentMove.name}'s turn`
+                }
             }
 
 
         });
     }
+    restart.addEventListener("click", function(e) {
+        for (i = 0;i < board.length; i++) {
+            board[i].innerHTML = ""
+        notStop = true;
+        message.innerHTML = `${currentMove.name}'s turn`
+        }
+    })
+    message.innerHTML = `${currentMove.name}'s turn`
 
     return {board, checkStatus, checkWin, winScenario}
     
