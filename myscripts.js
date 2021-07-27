@@ -1,5 +1,11 @@
-const game = () => {
-    const board = Array.from(document.getElementsByClassName("cell"))
+const Game = () => {
+    const board = Array.from(document.getElementsByClassName("cell"));
+    const playerOne = Player("Player One", "X");
+    const playerTwo = Player("Player Two", "O");
+    const message = document.getElementById("message");
+    let notStop = true;
+    
+    currentMove = playerOne
     const winScenario = [
         [0, 1, 2],
         [3, 4, 5],
@@ -9,13 +15,63 @@ const game = () => {
         [2, 5, 8],
         [0, 4, 8],
         [2, 4, 6]
-    ]
+    ];
+    const checkWin = () => {
+        for (i = 0; i < winScenario.length; i++) {
+            if (board[winScenario[i][0]].innerHTML === board[winScenario[i][1]].innerHTML && board[winScenario[i][1]].innerHTML === winScenario[[i][2]].innerHTML) {
+                if (playerOne.symbol === board[winScenario[i][0]]) {
+                    winner = playerOne.name;
+                } else {
+                    winner = playerTwo.name;
+                }
+                message.innerHTML = `${winner} has won!`
+                return true;
+            }
+        }
+    }
+
+    const checkStatus = () => {
+        if (checkWin()) {
+            notStop = false;
+        } else {
+            notEmpty = 0;
+            for (i = 0; i < board.length; i++) {
+                if (board[i].innerHTML !== "") notEmpty ++;
+            }
+            if (notEmpty === board.length) {
+                message.innerHTML = "Tie!"
+                notStop = false;
+            }
+        }
+        
+    }
+
+    // add events of making move for the cells
+    for (i = 0;i < board.length; i++) {
+        board[i].addEventListener("click", function(e) {
+            if (e.target.innerHTML == "" && notStop) {
+                e.target.innerHTML = currentMove.symbol
+                checkStatus();
+                if (currentMove == playerOne) {
+                    currentMove = playerTwo
+                } else {
+                    currentMove = playerOne
+                }
+            }
+
+
+        });
+    }
+
+    return {board, checkStatus, checkWin, winScenario}
     
 }
 
-const player = (name, symbol) => {
+const Player = (name, symbol) => {
     return {
         name, 
         symbol
     }
 }
+
+game = Game();
